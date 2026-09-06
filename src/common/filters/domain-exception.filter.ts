@@ -1,6 +1,7 @@
-import { ExceptionFilter, Catch, ArgumentsHost, Logger } from "@nestjs/common";
+import { ExceptionFilter, Catch, ArgumentsHost, Logger, HttpStatus } from "@nestjs/common";
 import { Request } from "express";
 import { Response } from "express";
+import { AppException, ErrorCodes, HttpStatusCodes } from "../../errors/custom-exception";
 
 @Catch()
 export class DomainExceptionFilter implements ExceptionFilter {
@@ -11,9 +12,10 @@ export class DomainExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
     const status = this.getStatus(exception);
+    const message = this.getMessage(exception);
 
     this.logger.error(
-      `${request.method} ${request.url} - ${status}`,
+      `${request.method} ${request.url} - ${status} - ${message}`,
       exception instanceof Error ? exception.stack : undefined,
     );
 
@@ -22,33 +24,29 @@ export class DomainExceptionFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       path: request.url,
       requestId: request.headers["x-request-id"] || "unknown",
-      message: this.getMessage(exception),
+      message,
+      code: (exception as any)?.code || ErrorCodes.UNEXPECTED_ERROR,
     };
 
     response.status(status).json(errorResponse);
   }
 
   private getStatus(exception: unknown): number {
-    if (exception instanceof Error) {
-      if ((exception as any).code) {
-        const code = (exception as any).code;
-        if (code === "CODE_INVALID") return 403;
-        if (code === "CODE_ALREADY_USED") return 403;
-        if (code === "DEVICE_ALREADY_TRIALED") return 409;
-        if (code === "TRIAL_EXPIRED") return 403;
-        if (code === "RENEWAL_LIMIT_REACHED") return 403;
-      }
-      return 500;
+    if (exception instanceof AppException) {
+      return exception.status;
     }
-    return 500;
+    if (exception instanceof Error) {
+      return HttpStatusCodes.INTERNAL_SERVER;
+    }
+    return HttpStatusCodes.INTERNAL_SERVER;
   }
 
   private getMessage(exception: unknown): string {
-    if (exception instanceof Error) {
-      return (exception as any).message || "Error interno";
+    if (exception instanceof AppException) {
+      return exception.message;
     }
-    if (typeof exception === "object" && exception !== null) {
-      return (exception as any).message || "Error interno";
+    if (exception instanceof Error) {
+      return exception.message || "Error interno";
     }
     return "Error interno";
   }

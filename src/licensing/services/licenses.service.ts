@@ -7,6 +7,7 @@ import { UnitOfWork } from "../../database/ports/unit-of-work";
 import { ActivateRequestDto } from "../dto/activate-request.dto";
 import { LicenseResponseDto } from "../dto/license-response.dto";
 import { Device } from "../../database/domain/entities";
+import { CodeInvalidException, CodeAlreadyUsedException, DeviceAlreadyTrialedException, UnexpectedErrorException } from "../../errors/custom-exception";
 
 @Injectable()
 export class LicensesService {
@@ -33,7 +34,7 @@ export class LicensesService {
         userAgent,
         success: false,
       });
-      throw new Error("CODE_INVALID");
+      throw new CodeInvalidException();
     }
 
     if (code.usedAt !== null) {
@@ -43,7 +44,7 @@ export class LicensesService {
         userAgent,
         success: false,
       });
-      throw new Error("CODE_ALREADY_USED");
+      throw new CodeAlreadyUsedException();
     }
 
     const device = await this.devicesRepository.findByFingerprint(dto.fingerprint);
@@ -57,7 +58,7 @@ export class LicensesService {
           userAgent,
           success: false,
         });
-        throw new Error("DEVICE_ALREADY_TRIALED");
+        throw new DeviceAlreadyTrialedException();
       }
 
       if (device.status === "ACTIVE" && now >= device.trialEndsAt) {
@@ -137,7 +138,7 @@ export class LicensesService {
       );
     }
 
-    throw new Error("UNEXPECTED_ERROR");
+    throw new UnexpectedErrorException("LicensesService.activate");
   }
 
   async renew(

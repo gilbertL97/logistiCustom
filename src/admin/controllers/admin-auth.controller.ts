@@ -1,5 +1,6 @@
 import { Controller, Post, Body, HttpCode, HttpStatus } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
+import { CredentialsInvalidException } from "../../errors/custom-exception";
 
 @ApiTags("admin")
 @Controller("api/v1/admin")
@@ -12,6 +13,6 @@ export class AdminAuthController {
     if (email === process.env.ADMIN_BOOTSTRAP_EMAIL && password === process.env.ADMIN_BOOTSTRAP_PASSWORD) {
       return { access_token: "admin-jwt-token" };
     }
-    throw new Error("CREDENTIALS_INVALID");
+    throw new CredentialsInvalidException();
   }
 }
