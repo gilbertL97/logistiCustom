@@ -4,8 +4,8 @@ import { LicensesRepository } from "./licenses.repository";
 import { AttemptsRepository } from "./attempts.repository";
 import { AdminUsersRepository } from "./admin-users.repository";
 
-export interface UnitOfWork {
-  run<T>(fn: (repos: {
+export abstract class UnitOfWork {
+  abstract run<T>(fn: (repos: {
     codes: CodesRepository;
     devices: DevicesRepository;
     licenses: LicensesRepository;

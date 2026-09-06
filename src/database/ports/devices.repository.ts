@@ -1,10 +1,10 @@
-import { Device } from "../../domain/entities";
+import { Device } from "../domain/entities";
 
-export interface DevicesRepository {
-  findByFingerprint(fingerprint: string): Promise<Device | null>;
-  create(data: NewDevice): Promise<Device>;
-  renewTrial(id: string, newEndsAt: Date): Promise<Device>;
-  setStatus(id: string, status: Device['status']): Promise<void>;
+export abstract class DevicesRepository {
+  abstract findByFingerprint(fingerprint: string): Promise<Device | null>;
+  abstract create(data: NewDevice): Promise<Device>;
+  abstract renewTrial(id: string, newEndsAt: Date): Promise<Device>;
+  abstract setStatus(id: string, status: Device['status']): Promise<void>;
 }
 
 export interface NewDevice {

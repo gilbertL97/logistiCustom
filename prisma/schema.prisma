@@ -1,8 +1,15 @@
--- Prisma schema for licensing system
--- This schema defines the physical database structure.
--- Domain entities (TypeScript interfaces) are in database/domain/entities.ts
+// Prisma schema for licensing system
+// This schema defines the physical database structure.
+// Domain entities (TypeScript interfaces) are in database/domain/entities.ts
 
-enum DeviceStatus { ACTIVE EXPIRED REVOKED }
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
 
 model Code {
   id          String    @id @default(cuid())
@@ -32,7 +39,11 @@ model Device {
   attempts     Attempt[]
 }
 
-enum DeviceStatus { ACTIVE EXPIRED REVOKED }
+enum DeviceStatus {
+  ACTIVE
+  EXPIRED
+  REVOKED
+}
 
 model License {
   id         String   @id @default(cuid())
@@ -51,6 +62,7 @@ model Attempt {
   userAgent  String
   success    Boolean
   createdAt  DateTime @default(now())
+  device     Device?  @relation(fields: [deviceId], references: [id])
   @@index([createdAt])
 }
 
@@ -58,5 +70,5 @@ model AdminUser {
   id           String @id @default(cuid())
   email        String @unique
   passwordHash String
-  createdAt    DateTime @default(now--)
+  createdAt    DateTime @default(now())
 }

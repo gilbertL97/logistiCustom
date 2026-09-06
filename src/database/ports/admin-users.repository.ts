@@ -1,8 +1,8 @@
-import { AdminUser } from "../../domain/entities";
+import { AdminUser } from "../domain/entities";
 
-export interface AdminUsersRepository {
-  findByEmail(email: string): Promise<AdminUser | null>;
-  create(data: NewAdminUser): Promise<AdminUser>;
+export abstract class AdminUsersRepository {
+  abstract findByEmail(email: string): Promise<AdminUser | null>;
+  abstract create(data: NewAdminUser): Promise<AdminUser>;
 }
 
 export interface NewAdminUser {
