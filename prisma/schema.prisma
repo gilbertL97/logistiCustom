@@ -1,0 +1,62 @@
+-- Prisma schema for licensing system
+-- This schema defines the physical database structure.
+-- Domain entities (TypeScript interfaces) are in database/domain/entities.ts
+
+enum DeviceStatus { ACTIVE EXPIRED REVOKED }
+
+model Code {
+  id          String    @id @default(cuid())
+  code        String    @unique              // ej. "X7K2-9PQ4-M3D8", normalizado uppercase
+  createdBy   String                        // admin_user id
+  createdAt   DateTime  @default(now())
+  usedAt      DateTime?
+  usedByDeviceId String?  @unique
+  device      Device?   @relation(fields: [usedByDeviceId], references: [id])
+  maxUses     Int       @default(1)         // 1 por defecto; >1 solo si se decide
+}
+
+model Device {
+  id           String   @id @default(cuid())
+  fingerprint  String   @unique             // hash SHA-256 normalizado del set de señales
+  installId    String   @unique             // UUID generado por el app, cifrado en cliente
+  platform     String                        // "android"
+  appVersion   String
+  firstSeenAt  DateTime @default(now())
+  trialDays    Int      @default(7)
+  trialEndsAt  DateTime                      // calculado SIEMPRE con hora del servidor
+  renewals     Int      @default(0)          // cuántas renovaciones por código ha hecho
+  status       DeviceStatus @default(ACTIVE)
+  updatedAt    DateTime @updatedAt
+  licenses     License[]
+  code         Code?
+  attempts     Attempt[]
+}
+
+enum DeviceStatus { ACTIVE EXPIRED REVOKED }
+
+model License {
+  id         String   @id @default(cuid())
+  deviceId   String
+  device     Device   @relation(fields: [deviceId], references: [id])
+  issuedAt   DateTime @default(now())
+  expiresAt  DateTime                      // issuedAt + TOKEN_TTL_HORAS
+  revokedAt  DateTime?
+}
+
+model Attempt {
+  id         String   @id @default(cuid())
+  deviceId   String?
+  codeTried  String
+  ip         String
+  userAgent  String
+  success    Boolean
+  createdAt  DateTime @default(now())
+  @@index([createdAt])
+}
+
+model AdminUser {
+  id           String @id @default(cuid())
+  email        String @unique
+  passwordHash String
+  createdAt    DateTime @default(now--)
+}

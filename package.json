@@ -1,0 +1,32 @@
+{
+  "name": "back",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "prisma skills sync || exit 0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@nestjs/swagger": "^12.0.1",
+    "@prisma/client": "^7.10.0",
+    "argon2": "^0.45.1",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.15.1",
+    "reflect-metadata": "^0.2.2",
+    "uuid": "^14.0.2",
+    "zod": "^4.5.4"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.4.1",
+    "async-middleware": "^1.2.1",
+    "bcryptjs": "^3.0.3",
+    "prisma": "^8.0.0-rc.13",
+    "typescript": "^5.9.3"
+  }
+}
