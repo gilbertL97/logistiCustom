@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Post, Body, HttpCode, HttpStatus } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { DevicesRepository } from "../../database/ports/devices.repository";
 
 @ApiTags("admin")

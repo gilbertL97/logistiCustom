@@ -13,7 +13,7 @@ import { HealthModule } from "./health/health.module";
       isGlobal: true,
       envFilePath: [".env"],
     }),
-    DatabaseModule.forRoot("prisma"),
+    DatabaseModule.forRoot(),
     CommonModule,
     SecurityModule,
     LicensingModule,

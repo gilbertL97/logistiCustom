@@ -1,5 +1,5 @@
 import { Controller, Post, Body, HttpCode, HttpStatus } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { CredentialsInvalidException } from "../../errors/custom-exception";
 
 @ApiTags("admin")

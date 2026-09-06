@@ -2,7 +2,7 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { ConfigService } from "@nestjs/config";
 import { ValidationPipe } from "@nestjs/common";
-import { z } from "zod";
+import { Request, Response, NextFunction } from "express";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -19,7 +19,7 @@ async function bootstrap() {
   );
 
   // Security headers
-  app.use((req, res, next) => {
+  app.use((req: Request, res: Response, next: NextFunction) => {
     res.setHeader("X-Content-Type-Options", "nosniff");
     res.setHeader("X-Frame-Options", "DENY");
     next();

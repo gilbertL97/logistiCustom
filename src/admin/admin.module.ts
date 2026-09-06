@@ -5,7 +5,7 @@ import { DevicesController } from "./controllers/devices.controller";
 import { AdminAuthController } from "./controllers/admin-auth.controller";
 
 @Module({
-  imports: [DatabaseModule.forRoot("prisma")],
+  imports: [DatabaseModule.forRoot()],
   controllers: [CodesController, DevicesController, AdminAuthController],
   providers: [],
 })

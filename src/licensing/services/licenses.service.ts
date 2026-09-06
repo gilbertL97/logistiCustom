@@ -172,6 +172,6 @@ export class LicensesService {
       userAgent,
       success,
       deviceId,
-    });
+    }).then(() => undefined);
   }
 }
