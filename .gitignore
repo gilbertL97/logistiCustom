@@ -8,9 +8,11 @@ logs/
 # runtime temp
 *.pid
 *.seed
+dist
 
 # environment env files
 .env*
+!.env.example
 
 # dependency-based
 .DS_Store

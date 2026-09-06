@@ -4,29 +4,39 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "nest start",
+    "build": "nest build",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "prisma skills sync || exit 0"
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@nestjs/common": "^12.0.0",
+    "@nestjs/config": "^4.0.0",
+    "@nestjs/core": "^12.0.0",
+    "@nestjs/jwt": "^11.0.0",
+    "@nestjs/platform-express": "^12.0.0",
     "@nestjs/swagger": "^12.0.1",
-    "@prisma/client": "^7.10.0",
+    "@prisma/client": "^6.19.0",
     "argon2": "^0.45.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
+    "json5": "^2.2.3",
     "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
     "uuid": "^14.0.2",
     "zod": "^4.5.4"
   },
   "devDependencies": {
+    "@nestjs/cli": "^11.0.0",
     "@types/express": "^5.0.6",
     "@types/node": "^26.4.1",
     "async-middleware": "^1.2.1",
     "bcryptjs": "^3.0.3",
-    "prisma": "^8.0.0-rc.13",
+    "prisma": "^6.19.0",
     "typescript": "^5.9.3"
   }
 }
