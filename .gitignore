@@ -1,0 +1,20 @@
+# dependencies
+node_modules/
+
+# logs
+logs/
+*.log
+
+# runtime temp
+*.pid
+*.seed
+
+# environment env files
+.env*
+
+# dependency-based
+.DS_Store
+.coverage
+
+# middlewre folder content
+/.package-lock.json
