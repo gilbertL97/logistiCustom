@@ -1,0 +1,36 @@
+[
+  {
+    "key": "codes:create",
+    "controller": "CodesController",
+    "method": "generate",
+    "sourceFile": "admin\\controllers\\codes.controller.ts"
+  },
+  {
+    "key": "codes:read",
+    "controller": "CodesController",
+    "method": "list",
+    "sourceFile": "admin\\controllers\\codes.controller.ts"
+  },
+  {
+    "key": "devices:read",
+    "controller": "DevicesController",
+    "method": "list",
+    "sourceFile": "admin\\controllers\\devices.controller.ts"
+  },
+  {
+    "key": "devices:revoke",
+    "controller": "DevicesController",
+    "method": "revoke",
+    "route": ":id/revoke",
+    "httpMethod": "POST",
+    "sourceFile": "admin\\controllers\\devices.controller.ts"
+  },
+  {
+    "key": "devices:extend",
+    "controller": "DevicesController",
+    "method": "extend",
+    "route": ":id/extend",
+    "httpMethod": "POST",
+    "sourceFile": "admin\\controllers\\devices.controller.ts"
+  }
+]

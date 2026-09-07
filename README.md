@@ -2,6 +2,7 @@
 
 ## 📋 Tabla de Contenido
 - [Arquitectura General](#arquitectura-general)
+- [Modulo RBAC](#modulo-rbac)
 - [Tech Stack](#tech-stack)
 - [Estructura de Directorios](#estructura-de-directorios)
 - [Patrones de Error Global](#patrones-de-error-global)
@@ -34,6 +35,50 @@ src/
 2. **Dependency Injection** - Servicios inyectados a través del constructor
 3. **Domain-Driven Design** - Entidades y repositorios bien definidos
 4. **Global Error Handling** - Filtro de excepciones centralizado
+
+## Modulo RBAC
+
+El modulo `src/rbac/` esta organizado por responsabilidad y no depende de Prisma ni de otro ORM:
+
+- `domain/` - tipos y tokens del dominio RBAC.
+- `decorators/` - `@Permissions()`.
+- `guards/` - autorizacion HTTP mediante `RbacGuard`.
+- `services/` - escaneo de controladores y sincronizacion.
+- `ports/` - contratos de persistencia y adaptador SQL generico.
+- `adapters/` - persistencia JSON local para CLI/desarrollo.
+- `cli/` - comando de descubrimiento de permisos.
+
+### Escanear permisos
+
+El comando busca `*.controller.ts`, lee `@Permissions()` y genera un catalogo con controlador, metodo, ruta, verbo HTTP y archivo origen:
+
+```bash
+npm run rbac:scan -- src .rbac/permissions.json
+```
+
+Tambien acepta `--root` y `--output` cuando el shell/npm los reenvia correctamente:
+
+```bash
+node dist/rbac/cli/rbac-scan.js --root src --output .rbac/permissions.json
+```
+
+El CLI usa JSON por defecto para ejecutarse sin credenciales. Para guardar en una base de datos, la aplicacion debe implementar `RbacPermissionRepository` o usar `SqlRbacPermissionRepository`, que solo requiere un cliente con `query(sql, parameters)` y no conoce Prisma, TypeORM ni Sequelize.
+
+```typescript
+RbacModule.forRoot({
+  principalProperty: "admin",
+  repository: new SqlRbacPermissionRepository(dbClient),
+});
+```
+
+El orden de guards debe ser autenticacion y luego autorizacion:
+
+```typescript
+@UseGuards(AdminJwtAuthGuard, RbacGuard)
+@Permissions("devices:revoke")
+```
+
+La autorizacion depende exclusivamente de los permisos presentes en el principal autenticado. Un usuario no necesita un rol concreto: basta con que su claim `permissions` incluya el permiso requerido.
 
 ---
 
@@ -217,6 +262,7 @@ ARGON2_PARALLELISM=2
 |--------|-------------|
 | `dev` | Ejecutar en modo desarrollo con hot-reload |
 | `build` | Compilar TypeScript a JavaScript |
+| `rbac:scan` | Escanear controladores y generar el catálogo de permisos |
 | `start` | Ejecutar en producción |
 | `test` | Ejecutar tests (configurar en package.json) |
 | `postinstall` | Ejecutar `prisma skills sync` después de install |

@@ -15,7 +15,10 @@ export class AdminAuthController {
     const { email, password } = body;
     if (email === process.env.ADMIN_BOOTSTRAP_EMAIL && password === process.env.ADMIN_BOOTSTRAP_PASSWORD) {
       const access_token = await this.jwtService.signAsync(
-        { sub: email, role: "admin" },
+        {
+          sub: email,
+          permissions: ["codes:create", "codes:read", "devices:read", "devices:revoke", "devices:extend"],
+        },
         {
           secret: process.env.ADMIN_JWT_SECRET,
           expiresIn: Number(process.env.ADMIN_TOKEN_TTL_HOURS || 8) * 60 * 60,

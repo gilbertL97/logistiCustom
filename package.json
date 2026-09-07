@@ -6,6 +6,7 @@
   "scripts": {
     "start": "nest start",
     "build": "nest build",
+    "rbac:scan": "npm run build && node dist/rbac/cli/rbac-scan.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "prisma generate"
   },

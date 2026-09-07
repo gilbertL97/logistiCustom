@@ -1,13 +1,18 @@
-import { Controller, Get, Post, Body, Param, HttpCode, HttpStatus } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { CodesRepository } from "../../database/ports/codes.repository";
+import { AdminJwtAuthGuard } from "../../common/guards/admin-jwt-auth.guard";
+import { Permissions } from "../../rbac/decorators/permissions.decorator";
+import { RbacGuard } from "../../rbac/guards/rbac.guard";
 
 @ApiTags("admin")
 @Controller("api/v1/admin/codes")
+@UseGuards(AdminJwtAuthGuard, RbacGuard)
 export class CodesController {
   constructor(private readonly codesRepository: CodesRepository) {}
 
   @Post()
+  @Permissions("codes:create")
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: "Generar códigos de prueba (bulk)" })
   async generate(@Body() body: { count: number; days?: number }) {
@@ -21,6 +26,7 @@ export class CodesController {
   }
 
   @Get()
+  @Permissions("codes:read")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Listar códigos y su estado" })
   async list() {
